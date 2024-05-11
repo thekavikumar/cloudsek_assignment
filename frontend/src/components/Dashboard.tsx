@@ -8,6 +8,8 @@ import TextEditor from "./TextEditor/TextEditor";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import Post from "./Post";
+import { ResizableScreen } from "./ResizeableScreen";
+import { X } from "lucide-react";
 
 const Dashboard = () => {
   const { getUser } = useKindeBrowserClient();
@@ -15,6 +17,7 @@ const Dashboard = () => {
   const [posts, setPosts] = React.useState([]);
   const [isNewPostCreated, setIsNewPostCreated] = React.useState(false);
   const [isPostDeleted, setIsPostDeleted] = React.useState(false);
+  const [selectedPost, setSelectedPost] = React.useState<IPost | null>(null);
 
   React.useEffect(() => {
     const fetchPosts = async () => {
@@ -33,6 +36,10 @@ const Dashboard = () => {
     setIsPostDeleted(!isPostDeleted);
   };
 
+  const handlePostSelected = (post: IPost) => {
+    setSelectedPost(post);
+  };
+
   // const posts: [] = [];
   return (
     <MaxWidthWrapper>
@@ -45,24 +52,47 @@ const Dashboard = () => {
           <LogoutButton />
         </div>
       </nav>
-      <TextEditor onPostCreated={handlePostCreated} />
-      <div className="mt-5 pb-8">
-        <h1 className="text-2xl font-semibold text-center mb-3">Posts</h1>
-        {posts.length > 0 ? (
-          <div className="flex items-center flex-col gap-4">
+      <ResizableScreen
+        firstScreen={
+          <div className="flex flex-col gap-6 h-full overflow-y-auto scrollable-container pb-24">
+            <TextEditor onPostCreated={handlePostCreated} />
             {posts.map((post: IPost) => (
               <Post
-                post={post}
                 key={post._id}
+                post={post}
                 userId={user?.id}
                 onDelete={handlePostDeleted}
+                onClick={() => handlePostSelected(post)}
               />
             ))}
           </div>
-        ) : (
-          <p>No posts found</p>
-        )}
-      </div>
+        }
+        secondScreen={
+          <div className="flex flex-col w-full h-full  overflow-y-auto scrollable-container">
+            {selectedPost && (
+              <div className="flex item-center self-end mr-6 ">
+                <button className="" onClick={() => setSelectedPost(null)}>
+                  <X size={18} />
+                </button>
+              </div>
+            )}
+            {selectedPost ? (
+              <div className="flex flex-col gap-6 w-full mt-3 ">
+                <Post
+                  post={selectedPost}
+                  userId={user?.id}
+                  onDelete={handlePostDeleted}
+                  onClick={() => handlePostSelected(selectedPost)}
+                />
+              </div>
+            ) : (
+              <h1 className="text-2xl font-semibold text-center">
+                No post selected
+              </h1>
+            )}
+          </div>
+        }
+      />
     </MaxWidthWrapper>
   );
 };

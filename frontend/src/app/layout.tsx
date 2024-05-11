@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inconsolata.className}>
+      <body className={`${inconsolata.className} scrollable-container`}>
         <Toaster />
         {children}
       </body>

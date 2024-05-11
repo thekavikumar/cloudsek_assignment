@@ -69,18 +69,6 @@ const Toolbar = ({ editorState, setEditorState }) => {
       method: "inline",
     },
     {
-      label: "Unordered-List",
-      style: "unordered-list-item",
-      method: "block",
-      icon: <FontAwesomeIcon icon={faListUl} transform="grow-6" />,
-    },
-    {
-      label: "Ordered-List",
-      style: "ordered-list-item",
-      method: "block",
-      icon: <FontAwesomeIcon icon={faListOl} transform="grow-6" />,
-    },
-    {
       label: "Code Block",
       style: "CODEBLOCK",
       icon: <FontAwesomeIcon icon={faCode} transform="grow-3" />,

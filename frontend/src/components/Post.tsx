@@ -11,10 +11,12 @@ const Post = ({
   post,
   userId,
   onDelete,
+  onClick,
 }: {
   post: IPost;
   userId: string | undefined;
   onDelete: () => void;
+  onClick: () => void;
 }) => {
   const createMarkup = (html: string) => {
     return {
@@ -30,8 +32,8 @@ const Post = ({
   };
 
   return (
-    <div className="max-w-[34rem] mx-auto border border-gray-300 shadow w-full rounded-md p-4">
-      <div className="flex items-center gap-3">
+    <div className="max-w-[29rem] mx-auto border border-gray-300 shadow w-full rounded-md p-4 hover:scale-105 transition duration-300 ease-in-out cursor-pointer">
+      <div className="flex items-center gap-3" onClick={onClick}>
         <Avatar>
           <AvatarImage src={post.profileImage} alt="profile image" />
         </Avatar>
@@ -40,6 +42,7 @@ const Post = ({
       <div
         className="mt-4"
         dangerouslySetInnerHTML={createMarkup(post.content)}
+        onClick={onClick}
       ></div>
       <div className="flex items-center justify-between w-full">
         <div className="flex items-center gap-4 mt-3">
@@ -47,7 +50,7 @@ const Post = ({
             <Heart size={18} color="#000" fill="red" />
             <h1>500</h1>
           </button>
-          <button className="flex items-center gap-2">
+          <button className="flex items-center gap-2" onClick={onClick}>
             <MessageCircle size={18} color="#000" />
             <h1>421</h1>
           </button>
