@@ -8,8 +8,8 @@ export interface IComment {
 export interface IPost extends Document {
   _id: string;
   userId: string;
-  title: string;
   author: string;
+  profileImage: string;
   content: string;
   createdAt: Date;
   updatedAt: Date;

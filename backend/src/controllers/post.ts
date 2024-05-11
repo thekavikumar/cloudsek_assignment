@@ -14,7 +14,7 @@ exports.getPosts = async (req: Request, res: Response): Promise<void> => {
 
 exports.createPost = async (req: Request, res: Response): Promise<void> => {
   const post = req.body.post;
-  console.log(req.body);
+  console.log("post: ", req.body.post);
 
   const newPost = new Post(post);
   console.log(newPost);

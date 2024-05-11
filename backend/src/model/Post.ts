@@ -10,8 +10,13 @@ export interface IComment {
 
 export interface IPost extends Document {
   userId: string;
-  title: string;
   author: string;
+  profileImage: string;
+  stats: {
+    likes: number;
+    comments: number;
+    shares: number;
+  };
   content: string;
   createdAt: Date;
   updatedAt: Date;
@@ -20,8 +25,8 @@ export interface IPost extends Document {
 
 const postScheme = new Schema({
   userId: String,
-  title: String,
   author: String,
+  profileImage: String,
   content: String,
   createdAt: Date,
   updatedAt: Date,
@@ -34,6 +39,11 @@ const postScheme = new Schema({
         likes: Number,
       },
     ] || [],
+  stats: {
+    likes: Number,
+    comments: Number,
+    shares: Number,
+  },
 });
 
 const Post = model("Post", postScheme);

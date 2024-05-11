@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
 import { Inconsolata } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "react-hot-toast";
 
-const inconsolata = Inconsolata({ subsets: ["latin"] });
+const inconsolata = Inconsolata({
+  subsets: ["latin"],
+  weight: ["200", "400", "700", "300", "500", "600", "800", "900"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,7 +21,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inconsolata.className}>{children}</body>
+      <body className={inconsolata.className}>
+        <Toaster />
+        {children}
+      </body>
     </html>
   );
 }
