@@ -6,14 +6,15 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export async function getPosts() {
-  const res = await fetch("http://localhost:3001/api/posts/getPosts");
+  const backend = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const res = await fetch(`${backend}/api/posts/getPosts`);
   const posts = await res.json();
   return posts;
 }
 
 export async function deletePost(postId: string, userId: string) {
   const res = await fetch(
-    `http://localhost:3001/api/posts/deletePost/${userId}/${postId}`,
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/deletePost/${userId}/${postId}`,
     {
       method: "DELETE",
     }
@@ -23,7 +24,9 @@ export async function deletePost(postId: string, userId: string) {
 }
 
 export async function getPostById(postId: string) {
-  const res = await fetch(`http://localhost:3001/api/posts/getPost/${postId}`);
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/getPost/${postId}`
+  );
   const post = await res.json();
   return post;
 }
@@ -36,7 +39,7 @@ export async function createComment(
   profileImage: string
 ) {
   const res = await fetch(
-    `http://localhost:3001/api/posts/createComment/${postId}`,
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/createComment/${postId}`,
     {
       method: "POST",
       headers: {
