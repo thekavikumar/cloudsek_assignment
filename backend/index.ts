@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
-const PORT: number = 3000;
+const PORT: number = 3001;
 app.use(cors());
 
 // @ts-ignore
