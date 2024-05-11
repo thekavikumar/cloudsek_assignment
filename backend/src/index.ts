@@ -4,12 +4,14 @@ const cors = require("cors");
 const postRoute = require("./routes/post");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const morgan = require("morgan");
 
 dotenv.config();
 
 const app = express();
 const PORT: number = 3001;
 app.use(cors());
+app.use(morgan("dev"));
 
 mongoose.connect(process.env.MONGODB_URI);
 
