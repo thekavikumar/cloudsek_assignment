@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { IPost } from "../lib/types";
-import { getPosts } from "@/lib/utils";
+import { getPostById, getPosts } from "@/lib/utils";
 import LogoutButton from "./LogoutButton";
 import MaxWidthWrapper from "./MaxWidthWrapper";
 import TextEditor from "./TextEditor/TextEditor";
@@ -10,12 +10,15 @@ import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import Post from "./Post";
 import { ResizableScreen } from "./ResizeableScreen";
 import { X } from "lucide-react";
+import CommentEditor from "./CommentEditor/TextEditor";
+import Comment from "./Comment";
 
 const Dashboard = () => {
   const { getUser } = useKindeBrowserClient();
   const user = getUser();
   const [posts, setPosts] = React.useState([]);
   const [isNewPostCreated, setIsNewPostCreated] = React.useState(false);
+  const [isNewCommentCreated, setIsNewCommentCreated] = React.useState(false);
   const [isPostDeleted, setIsPostDeleted] = React.useState(false);
   const [selectedPost, setSelectedPost] = React.useState<IPost | null>(null);
 
@@ -26,7 +29,19 @@ const Dashboard = () => {
     };
 
     fetchPosts();
-  }, [isNewPostCreated, isPostDeleted]); // Fetch posts whenever isNewPostCreated changes
+  }, [isNewPostCreated, isPostDeleted, isNewCommentCreated]); // Fetch posts whenever isNewPostCreated changes
+
+  React.useEffect(() => {
+    if (selectedPost && isNewCommentCreated) {
+      const fetchPost = async () => {
+        const fetchedPost = await getPostById(selectedPost._id);
+        setSelectedPost(fetchedPost);
+        setIsNewCommentCreated(false); // Reset isNewCommentCreated after fetching post
+      };
+
+      fetchPost();
+    }
+  }, [isNewCommentCreated, selectedPost]);
 
   const handlePostCreated = () => {
     setIsNewPostCreated(!isNewPostCreated);
@@ -38,6 +53,10 @@ const Dashboard = () => {
 
   const handlePostSelected = (post: IPost) => {
     setSelectedPost(post);
+  };
+
+  const handleCommentCreated = (postId: string) => {
+    setIsNewCommentCreated(true);
   };
 
   // const posts: [] = [];
@@ -68,7 +87,7 @@ const Dashboard = () => {
           </div>
         }
         secondScreen={
-          <div className="flex flex-col w-full h-full  overflow-y-auto scrollable-container">
+          <div className="flex flex-col w-full h-full  overflow-y-auto scrollable-container pb-24">
             {selectedPost && (
               <div className="flex item-center self-end mr-6 ">
                 <button className="" onClick={() => setSelectedPost(null)}>
@@ -77,13 +96,31 @@ const Dashboard = () => {
               </div>
             )}
             {selectedPost ? (
-              <div className="flex flex-col gap-6 w-full mt-3 ">
+              <div className="flex flex-col gap-2 w-full mt-3 ">
                 <Post
                   post={selectedPost}
                   userId={user?.id}
                   onDelete={handlePostDeleted}
                   onClick={() => handlePostSelected(selectedPost)}
                 />
+                <div className="mx-auto">
+                  <CommentEditor
+                    onCommentCreated={handleCommentCreated}
+                    postId={selectedPost._id}
+                  />
+                  {selectedPost.comments.length > 0 && (
+                    <h1 className="text-2xl font-semibold mt-5">Comments</h1>
+                  )}
+                  {selectedPost.comments.map((comment: any) => (
+                    <div key={comment._id} className="mt-3">
+                      <Comment
+                        comment={comment}
+                        userId={user?.id}
+                        onDelete={handlePostDeleted}
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
             ) : (
               <h1 className="text-2xl font-semibold text-center">

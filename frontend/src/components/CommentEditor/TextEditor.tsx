@@ -15,9 +15,9 @@ import { Button } from "../ui/button";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import toast from "react-hot-toast";
 import { convertToHTML } from "draft-convert";
-import { stat } from "fs";
+import { createComment } from "@/lib/utils";
 
-const TextEditor = ({ onPostCreated }) => {
+const CommentEditor = ({ onCommentCreated, postId }) => {
   const { getUser } = useKindeBrowserClient();
   const user = getUser();
   const [editorState, setEditorState] = useState(
@@ -119,45 +119,18 @@ const TextEditor = ({ onPostCreated }) => {
     }
   };
 
-  const handleSubmit = () => {
-    const post = {
-      userId: user?.id,
-      author: user?.given_name,
-      profileImage: user?.picture,
-      stats: {
-        likes: {
-          likedBy: [],
-          count: 0,
-        },
-        shares: 0,
-      },
-      content: convertedContent,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      comments: [],
-    };
-
-    try {
-      fetch("http://localhost:3001/api/posts/createPost", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          post: post,
-        }),
-      })
-        .then((res) => {
-          toast.success("Post created successfully");
-          setEditorState(EditorState.createEmpty());
-          onPostCreated();
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    } catch (error) {
-      console.error(error);
-    }
+  const handleSubmit = async () => {
+    await createComment(
+      postId,
+      user?.id,
+      convertedContent,
+      user?.given_name,
+      user?.picture
+    ).then(() => {
+      onCommentCreated(postId);
+      setEditorState(EditorState.createEmpty());
+      toast.success("Comment posted successfully");
+    });
   };
 
   return (
@@ -170,7 +143,7 @@ const TextEditor = ({ onPostCreated }) => {
         <Editor
           ref={editor}
           // readOnly
-          placeholder="Write your story"
+          placeholder="Comment here..."
           handleKeyCommand={handleKeyCommand}
           editorState={editorState}
           customStyleMap={styleMap}
@@ -191,4 +164,4 @@ const TextEditor = ({ onPostCreated }) => {
   );
 };
 
-export default TextEditor;
+export default CommentEditor;

@@ -3,9 +3,14 @@ const { Schema, model } = mongoose;
 
 export interface IComment {
   commentId: string;
-  user: string;
+  userId: string;
+  author: string;
   content: string;
-  likes: number;
+  profileImage: string;
+  likes: {
+    likedBy: string[];
+    count: number;
+  };
 }
 
 export interface IPost extends Document {
@@ -13,8 +18,10 @@ export interface IPost extends Document {
   author: string;
   profileImage: string;
   stats: {
-    likes: number;
-    comments: number;
+    likes: {
+      likedBy: string[];
+      count: number;
+    };
     shares: number;
   };
   content: string;
@@ -34,14 +41,21 @@ const postScheme = new Schema({
     [
       {
         commentId: String,
-        user: String,
+        userId: String,
+        author: String,
+        profileImage: String,
         content: String,
-        likes: Number,
+        likes: {
+          likedBy: [String],
+          count: Number,
+        },
       },
     ] || [],
   stats: {
-    likes: Number,
-    comments: Number,
+    likes: {
+      likedBy: [String],
+      count: Number,
+    },
     shares: Number,
   },
 });

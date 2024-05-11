@@ -8,6 +8,13 @@ export interface IComment {
 export interface IPost extends Document {
   _id: string;
   userId: string;
+  stats: {
+    likes: {
+      likedBy: string[];
+      count: number;
+    };
+    shares: number;
+  };
   author: string;
   profileImage: string;
   content: string;

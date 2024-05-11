@@ -94,3 +94,57 @@ exports.deletePost = async (req: Request, res: Response): Promise<void> => {
     res.status(400).json({ message: error.message });
   }
 };
+
+exports.getPost = async (req: Request, res: Response): Promise<void> => {
+  const postId = new mongoose.Types.ObjectId(req.params.postId);
+
+  try {
+    const post: IPost | null = await Post.findById(postId);
+
+    if (!post) {
+      res.status(404).json({ message: "Post not found" });
+      return;
+    }
+
+    res.status(200).json(post);
+  } catch (error) {
+    // @ts-ignore
+    res.status(400).json({ message: error.message });
+  }
+};
+
+exports.createComment = async (req: Request, res: Response) => {
+  const postId = new mongoose.Types.ObjectId(req.params.postId);
+  const { userId, content, author, profileImage } = req.body;
+
+  try {
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // Create new comment
+    const newComment = {
+      commentId: generateUniqueId(), // You need to implement a function to generate unique IDs
+      userId: userId,
+      author: author,
+      profileImage: profileImage,
+      content: content,
+      likes: { likedBy: [], count: 0 },
+    };
+
+    // Add the new comment to the post's comments array
+    post.comments.push(newComment);
+
+    await post.save();
+    res.status(201).json(newComment);
+  } catch (error) {
+    // @ts-ignore
+    res.status(500).json({ message: error.message });
+  }
+};
+
+function generateUniqueId(): string {
+  const uniqueId = Math.random().toString(36).substr(2, 9);
+  return uniqueId;
+}
