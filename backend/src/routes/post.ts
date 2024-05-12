@@ -18,6 +18,12 @@ router.put("/updatePost/:postId", postController.updatePost);
 // delete a post
 router.delete("/deletePost/:userId/:postId", postController.deletePost);
 
+// delete a comment
+router.delete(
+  "/deleteComment/:postId/:commentId/:userId",
+  postController.deleteComment
+);
+
 router.post("/createComment/:postId", postController.createComment);
 
 module.exports = router;

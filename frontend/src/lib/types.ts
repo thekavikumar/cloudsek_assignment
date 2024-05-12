@@ -1,8 +1,13 @@
 export interface IComment {
   commentId: string;
-  user: string;
+  userId: string;
+  author: string;
   content: string;
-  likes: number;
+  profileImage: string;
+  likes: {
+    likedBy: string[];
+    count: number;
+  };
 }
 
 export interface IPost extends Document {

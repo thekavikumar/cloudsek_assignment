@@ -23,6 +23,21 @@ export async function deletePost(postId: string, userId: string) {
   return data;
 }
 
+export async function deleteComment(
+  postId: string,
+  commentId: string,
+  userId: string
+) {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/deleteComment/${postId}/${commentId}/${userId}`,
+    {
+      method: "DELETE",
+    }
+  );
+  const data = await res.json();
+  return data;
+}
+
 export async function getPostById(postId: string) {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/getPost/${postId}`

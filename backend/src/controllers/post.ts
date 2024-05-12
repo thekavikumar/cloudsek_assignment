@@ -95,6 +95,47 @@ exports.deletePost = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+exports.deleteComment = async (req: Request, res: Response): Promise<void> => {
+  const postId = new mongoose.Types.ObjectId(req.params.postId);
+  const commentId = req.params.commentId;
+  const userId = req.params.userId;
+
+  try {
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      res.status(404).json({ message: "Post not found" });
+      return;
+    }
+
+    const commentIndex = post.comments.findIndex(
+      (comment: any) => comment.commentId === commentId
+    );
+
+    if (commentIndex === -1) {
+      res.status(404).json({ message: "Comment not found" });
+      return;
+    }
+
+    if (
+      post.comments[commentIndex].userId !== userId &&
+      post.userId !== userId
+    ) {
+      res
+        .status(403)
+        .json({ message: "You are not authorized to delete this comment" });
+      return;
+    }
+
+    post.comments.splice(commentIndex, 1);
+    await post.save();
+    res.status(200).json({ message: "Comment deleted successfully" });
+  } catch (error) {
+    // @ts-ignore
+    res.status(400).json({ message: error.message });
+  }
+};
+
 exports.getPost = async (req: Request, res: Response): Promise<void> => {
   const postId = new mongoose.Types.ObjectId(req.params.postId);
 

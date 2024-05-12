@@ -21,6 +21,7 @@ const Dashboard = () => {
   const [isNewCommentCreated, setIsNewCommentCreated] = React.useState(false);
   const [isPostDeleted, setIsPostDeleted] = React.useState(false);
   const [selectedPost, setSelectedPost] = React.useState<IPost | null>(null);
+  const [isCommentDeleted, setIsCommentDeleted] = React.useState(false);
 
   React.useEffect(() => {
     const fetchPosts = async () => {
@@ -29,19 +30,23 @@ const Dashboard = () => {
     };
 
     fetchPosts();
-  }, [isNewPostCreated, isPostDeleted, isNewCommentCreated]); // Fetch posts whenever isNewPostCreated changes
+  }, [isNewPostCreated, isPostDeleted, isNewCommentCreated, isCommentDeleted]); // Fetch posts whenever isNewPostCreated changes
 
   React.useEffect(() => {
-    if (selectedPost && isNewCommentCreated) {
+    if (
+      (selectedPost && isNewCommentCreated) ||
+      (selectedPost && isCommentDeleted)
+    ) {
       const fetchPost = async () => {
         const fetchedPost = await getPostById(selectedPost._id);
         setSelectedPost(fetchedPost);
         setIsNewCommentCreated(false); // Reset isNewCommentCreated after fetching post
+        setIsCommentDeleted(false);
       };
 
       fetchPost();
     }
-  }, [isNewCommentCreated, selectedPost]);
+  }, [isNewCommentCreated, selectedPost, isCommentDeleted]);
 
   const handlePostCreated = () => {
     setIsNewPostCreated(!isNewPostCreated);
@@ -57,6 +62,10 @@ const Dashboard = () => {
 
   const handleCommentCreated = (postId: string) => {
     setIsNewCommentCreated(true);
+  };
+
+  const handleCommentDeleted = () => {
+    setIsCommentDeleted(!isCommentDeleted);
   };
 
   // const posts: [] = [];
@@ -114,9 +123,10 @@ const Dashboard = () => {
                   {selectedPost.comments.map((comment: any) => (
                     <div key={comment._id} className="mt-3">
                       <Comment
+                        post={selectedPost}
                         comment={comment}
                         userId={user?.id}
-                        onDelete={handlePostDeleted}
+                        onDelete={handleCommentDeleted}
                       />
                     </div>
                   ))}
