@@ -54,7 +54,7 @@ const Comment = ({
         <div className="flex items-center gap-4 mt-3">
           <button className="flex items-center gap-2">
             <MessageCircle size={18} color="#000" />
-            <h1>{post.comments?.length}</h1>
+            <h1>0</h1>
           </button>
           {(userId === comment.userId || post.userId === userId) && (
             <button className="flex items-center gap-2" onClick={handleDelete}>
