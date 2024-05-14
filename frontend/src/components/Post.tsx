@@ -3,20 +3,25 @@ import { IPost } from "@/lib/types";
 import React from "react";
 import DOMPurify from "dompurify";
 import { Avatar, AvatarImage } from "./ui/avatar";
-import { Heart, MessageCircle, Share, Trash2 } from "lucide-react";
+import { Heart, MessageCircle, Pencil, Share, Trash2 } from "lucide-react";
 import { deletePost } from "@/lib/utils";
 import toast from "react-hot-toast";
+import { EditDialog } from "./EditDialog";
 
 const Post = ({
   post,
   userId,
   onDelete,
   onClick,
+  onPostCreated,
+  handleUpdate,
 }: {
   post: IPost;
   userId: string | undefined;
   onDelete: () => void;
   onClick: () => void;
+  handleUpdate: () => void;
+  onPostCreated?: any;
 }) => {
   const createMarkup = (html: string) => {
     return {
@@ -55,6 +60,16 @@ const Post = ({
             <button className="flex items-center gap-2" onClick={handleDelete}>
               <Trash2 size={18} color="#000" />
             </button>
+          )}
+          {userId === post.userId && (
+            <EditDialog postId={post._id} onPostCreated={onPostCreated}>
+              <button
+                className="flex items-center gap-2"
+                onClick={handleUpdate}
+              >
+                <Pencil size={18} color="#000" />
+              </button>
+            </EditDialog>
           )}
         </div>
       </div>

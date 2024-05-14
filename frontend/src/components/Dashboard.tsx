@@ -19,6 +19,7 @@ const Dashboard = () => {
   const [posts, setPosts] = React.useState([]);
   const [isNewPostCreated, setIsNewPostCreated] = React.useState(false);
   const [isNewCommentCreated, setIsNewCommentCreated] = React.useState(false);
+  const [isPostUpdated, setIsPostUpdated] = React.useState(false);
   const [isPostDeleted, setIsPostDeleted] = React.useState(false);
   const [selectedPost, setSelectedPost] = React.useState<IPost | null>(null);
   const [isCommentDeleted, setIsCommentDeleted] = React.useState(false);
@@ -30,27 +31,37 @@ const Dashboard = () => {
     };
 
     fetchPosts();
-  }, [isNewPostCreated, isPostDeleted, isNewCommentCreated, isCommentDeleted]); // Fetch posts whenever isNewPostCreated changes
+  }, [
+    isNewPostCreated,
+    isPostDeleted,
+    isNewCommentCreated,
+    isCommentDeleted,
+    isPostUpdated,
+  ]); // Fetch posts whenever isNewPostCreated changes
 
   React.useEffect(() => {
     if (
       (selectedPost && isNewCommentCreated) ||
-      (selectedPost && isCommentDeleted)
+      (selectedPost && isCommentDeleted) ||
+      (selectedPost && isPostUpdated)
     ) {
       const fetchPost = async () => {
         const fetchedPost = await getPostById(selectedPost._id);
         setSelectedPost(fetchedPost);
         setIsNewCommentCreated(false); // Reset isNewCommentCreated after fetching post
         setIsCommentDeleted(false);
+        setIsPostUpdated(false);
       };
 
       fetchPost();
     }
-  }, [isNewCommentCreated, selectedPost, isCommentDeleted]);
+  }, [isNewCommentCreated, selectedPost, isCommentDeleted, isPostUpdated]);
 
   const handlePostCreated = () => {
     setIsNewPostCreated(!isNewPostCreated);
   };
+
+  const handlePostUpdated = () => {};
 
   const handlePostDeleted = () => {
     setIsPostDeleted(!isPostDeleted);
@@ -90,7 +101,9 @@ const Dashboard = () => {
                 post={post}
                 userId={user?.id}
                 onDelete={handlePostDeleted}
+                onPostCreated={handlePostCreated}
                 onClick={() => handlePostSelected(post)}
+                handleUpdate={handlePostUpdated}
               />
             ))}
           </div>
@@ -110,6 +123,7 @@ const Dashboard = () => {
                   post={selectedPost}
                   userId={user?.id}
                   onDelete={handlePostDeleted}
+                  handleUpdate={handlePostUpdated}
                   onClick={() => handlePostSelected(selectedPost)}
                 />
                 <div className="mx-auto">

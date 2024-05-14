@@ -3,7 +3,7 @@ import { IComment, IPost } from "@/lib/types";
 import React from "react";
 import DOMPurify from "dompurify";
 import { Avatar, AvatarImage } from "./ui/avatar";
-import { Heart, MessageCircle, Share, Trash2 } from "lucide-react";
+import { Heart, MessageCircle, Pencil, Share, Trash2 } from "lucide-react";
 import { deleteComment, deletePost } from "@/lib/utils";
 import toast from "react-hot-toast";
 
@@ -59,6 +59,11 @@ const Comment = ({
           {(userId === comment.userId || post.userId === userId) && (
             <button className="flex items-center gap-2" onClick={handleDelete}>
               <Trash2 size={18} color="#000" />
+            </button>
+          )}
+          {userId === comment.userId && (
+            <button className="flex items-center gap-2" onClick={handleDelete}>
+              <Pencil size={18} color="#000" />
             </button>
           )}
         </div>

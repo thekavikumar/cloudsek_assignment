@@ -8,6 +8,7 @@ import {
   convertToRaw,
   ContentState,
   convertFromRaw,
+  convertFromHTML,
 } from "draft-js";
 
 import Toolbar from "../Toolbar";
@@ -15,9 +16,20 @@ import { Button } from "../ui/button";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import toast from "react-hot-toast";
 import { convertToHTML } from "draft-convert";
-import { stat } from "fs";
 
-const TextEditor = ({ onPostCreated }) => {
+interface TextEditorProps {
+  onPostCreated?: any;
+  update?: boolean;
+  postId?: string; // New prop to receive postId for updating
+  setOpen?: any; // New prop to close the dialog
+}
+
+const TextEditor = ({
+  onPostCreated,
+  update,
+  postId,
+  setOpen,
+}: TextEditorProps) => {
   const { getUser } = useKindeBrowserClient();
   const user = getUser();
   const [editorState, setEditorState] = useState(
@@ -47,6 +59,13 @@ const TextEditor = ({ onPostCreated }) => {
   useEffect(() => {
     focusEditor();
   }, []);
+
+  useEffect(() => {
+    if (update && postId) {
+      // Fetch the content of the post for update
+      fetchPostContent(postId);
+    }
+  }, [update, postId]);
 
   useEffect(() => {
     let html = convertToHTML(editorState.getCurrentContent());
@@ -137,18 +156,28 @@ const TextEditor = ({ onPostCreated }) => {
       comments: [],
     };
 
+    const endpoint = update
+      ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/updatePost/${postId}`
+      : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/createPost`;
+
     try {
-      fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/createPost`, {
-        method: "POST",
+      fetch(endpoint, {
+        method: update ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           post: post,
+          userId: user?.id,
         }),
       })
         .then((res) => {
-          toast.success("Post created successfully");
+          if (update) {
+            setOpen(false);
+          }
+          toast.success(
+            update ? "Post updated successfully" : "Post created successfully"
+          );
           setEditorState(EditorState.createEmpty());
           onPostCreated();
         })
@@ -157,6 +186,37 @@ const TextEditor = ({ onPostCreated }) => {
         });
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const convertFromHTMLCustom = (html: string) => {
+    const blocksFromHTML = convertFromHTML(html);
+    const contentState = ContentState.createFromBlockArray(
+      blocksFromHTML.contentBlocks,
+      blocksFromHTML.entityMap
+    );
+    return contentState;
+  };
+
+  const fetchPostContent = async (postId: string) => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/getPost/${postId}`
+      );
+      if (response.ok) {
+        const postData = await response.json();
+        if (postData.content) {
+          // If content exists, convert HTML to Draft.js content
+          const contentState = convertFromHTMLCustom(postData.content); // You'll need to implement convertFromHTML function
+          const newEditorState = EditorState.createWithContent(contentState);
+          setEditorState(newEditorState);
+        }
+      } else {
+        throw new Error("Failed to fetch post content");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to fetch post content");
     }
   };
 
@@ -185,7 +245,7 @@ const TextEditor = ({ onPostCreated }) => {
         />
       </div>
       {editorState.getCurrentContent().hasText() && (
-        <Button onClick={handleSubmit}>Create</Button>
+        <Button onClick={handleSubmit}>{update ? "Update" : "Create"}</Button>
       )}
     </div>
   );
