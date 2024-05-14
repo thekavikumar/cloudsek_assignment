@@ -2,7 +2,7 @@
 
 # CloudSek Assignment 👨‍💻
 
-This project is a Post-Comments Service implemented using Next.js for the frontend, Node.js for the backend, and MongoDB for data storage. It provides functionalities to create posts, comments, and perform CRUD operations on them. Authentication is implemented using Kinvey.
+This project is a Post-Comments Service implemented using Next.js for the frontend, Node.js for the backend, and MongoDB for data storage. It provides functionalities to create posts, comments, and perform CRUD operations on them. Authentication is implemented using Kinde.
 
 ## Live Demo 🚀
 
@@ -101,13 +101,13 @@ npm run dev
 
 ### Endpoints
 
-- `GET /api/getPosts`: Retrieve all posts.
-- `GET /api/getPost/:postId`: Retrieve a post by ID.
-- `POST /api/createPost`: Create a new post.
-- `PUT /api/updatePost/:postId`: Update a post.
-- `DELETE /api/deletePost/:userId/:postId`: Delete a post.
-- `DELETE /api/deleteComment/:postId/:commentId/:userId`: Delete a comment.
-- `POST /api/createComment/:postId`: Create a comment on a post.
+- `GET /api/posts/getPosts`: Retrieve all posts.
+- `GET /api/posts/getPost/:postId`: Retrieve a post by ID.
+- `POST /api/posts/createPost`: Create a new post.
+- `PUT /api/posts/updatePost/:postId`: Update a post.
+- `DELETE /api/posts/deletePost/:userId/:postId`: Delete a post.
+- `DELETE /api/posts/deleteComment/:postId/:commentId/:userId`: Delete a comment.
+- `POST /api/posts/createComment/:postId`: Create a comment on a post.
 
 ## Authentication 🔒
 
