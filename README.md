@@ -2,7 +2,7 @@
 
 # CloudSek Assignment 👨‍💻
 
-This project is a Post-Comments Service implemented using Next.js for the frontend, Node.js for the backend, and MongoDB for data storage. It provides functionalities to create posts, comments, and perform CRUD operations on them. Authentication is implemented using Kinvey.
+This project is a Post-Comments Service implemented using Next.js for the frontend, Node.js for the backend, and MongoDB for data storage. It provides functionalities to create posts, comments, and perform CRUD operations on them. Authentication is implemented using Kinde.
 
 ## Live Demo 🚀
 
