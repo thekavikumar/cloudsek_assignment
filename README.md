@@ -8,6 +8,8 @@ This project is a Post-Comments Service implemented using Next.js for the fronte
 
 You can access the live demo [here](https://cloudsekassignment.vercel.app/).
 
+There may be some delay at the start of web app for the first time due to inactivity in backend server. 
+
 ## Repository Structure 📂
 
 The repository consists of two folders:
