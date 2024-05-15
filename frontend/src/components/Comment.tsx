@@ -63,11 +63,6 @@ const Comment = ({
               <Trash2 size={18} color="#000" />
             </button>
           )}
-          {userId === comment.userId && (
-            <button className="flex items-center gap-2" onClick={handleUpdate}>
-              <Pencil size={18} color="#000" />
-            </button>
-          )}
         </div>
       </div>
     </div>
