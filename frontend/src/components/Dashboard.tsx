@@ -23,6 +23,7 @@ const Dashboard = () => {
   const [isPostDeleted, setIsPostDeleted] = React.useState(false);
   const [selectedPost, setSelectedPost] = React.useState<IPost | null>(null);
   const [isCommentDeleted, setIsCommentDeleted] = React.useState(false);
+  const [isCommentUpdated, setIsCommentUpdated] = React.useState(false);
 
   React.useEffect(() => {
     const fetchPosts = async () => {
@@ -37,13 +38,15 @@ const Dashboard = () => {
     isNewCommentCreated,
     isCommentDeleted,
     isPostUpdated,
+    isCommentUpdated,
   ]); // Fetch posts whenever isNewPostCreated changes
 
   React.useEffect(() => {
     if (
       (selectedPost && isNewCommentCreated) ||
       (selectedPost && isCommentDeleted) ||
-      (selectedPost && isPostUpdated)
+      (selectedPost && isPostUpdated) ||
+      (selectedPost && isCommentUpdated)
     ) {
       const fetchPost = async () => {
         const fetchedPost = await getPostById(selectedPost._id);
@@ -51,17 +54,26 @@ const Dashboard = () => {
         setIsNewCommentCreated(false); // Reset isNewCommentCreated after fetching post
         setIsCommentDeleted(false);
         setIsPostUpdated(false);
+        setIsCommentUpdated(false);
       };
 
       fetchPost();
     }
-  }, [isNewCommentCreated, selectedPost, isCommentDeleted, isPostUpdated]);
+  }, [
+    isNewCommentCreated,
+    selectedPost,
+    isCommentDeleted,
+    isPostUpdated,
+    isCommentUpdated,
+  ]);
 
   const handlePostCreated = () => {
     setIsNewPostCreated(!isNewPostCreated);
   };
 
-  const handlePostUpdated = () => {};
+  const handlePostUpdated = () => {
+    setIsPostUpdated(!isPostUpdated);
+  };
 
   const handlePostDeleted = () => {
     setIsPostDeleted(!isPostDeleted);
@@ -77,6 +89,10 @@ const Dashboard = () => {
 
   const handleCommentDeleted = () => {
     setIsCommentDeleted(!isCommentDeleted);
+  };
+
+  const handleCommentUpdated = () => {
+    setIsCommentUpdated(true);
   };
 
   // const posts: [] = [];
@@ -137,6 +153,7 @@ const Dashboard = () => {
                   {selectedPost.comments.map((comment: any) => (
                     <div key={comment._id} className="mt-3">
                       <Comment
+                        handleUpdate={handleCommentUpdated}
                         post={selectedPost}
                         comment={comment}
                         userId={user?.id}

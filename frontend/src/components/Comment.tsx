@@ -12,11 +12,13 @@ const Comment = ({
   comment,
   userId,
   onDelete,
+  handleUpdate,
 }: {
   post: IPost;
   comment: IComment;
   userId: string | undefined;
   onDelete: () => void;
+  handleUpdate: () => void;
 }) => {
   const createMarkup = (html: string) => {
     return {
@@ -62,7 +64,7 @@ const Comment = ({
             </button>
           )}
           {userId === comment.userId && (
-            <button className="flex items-center gap-2" onClick={handleDelete}>
+            <button className="flex items-center gap-2" onClick={handleUpdate}>
               <Pencil size={18} color="#000" />
             </button>
           )}

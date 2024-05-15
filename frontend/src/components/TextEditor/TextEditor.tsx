@@ -55,6 +55,7 @@ const TextEditor = ({
   const _contentState = ContentState.createFromText("Sample content state");
   const raw = convertToRaw(_contentState); // RawDraftContentState JSON
   const [contentState, setContentState] = useState(raw);
+  const [comments, setComments] = useState([]);
 
   useEffect(() => {
     focusEditor();
@@ -153,7 +154,7 @@ const TextEditor = ({
       content: convertedContent,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      comments: [],
+      comments: comments,
     };
 
     const endpoint = update
@@ -210,6 +211,7 @@ const TextEditor = ({
           const contentState = convertFromHTMLCustom(postData.content); // You'll need to implement convertFromHTML function
           const newEditorState = EditorState.createWithContent(contentState);
           setEditorState(newEditorState);
+          setComments(postData.comments);
         }
       } else {
         throw new Error("Failed to fetch post content");
